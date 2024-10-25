@@ -1,0 +1,33 @@
+# Armington elastiscity
+rho_M := 0.8
+rho_X := 0.6
+
+ADJUST_P_Pny := 0.5
+ADJUST_Pe_Pe1y := 0.7
+ADJUST_Pe_P1y := 0.1
+ADJUST_Pe_Pny := 1 - ADJUST_Pe_Pe1y - ADJUST_Pe_P1y
+
+########################################################
+## Variables calibrated on "real data"
+########################################################
+M :=   21 * (1 + mu)^(@year - %baseyear)
+
+X :=   20 * (1 + mu)^(@year - %baseyear)
+
+@over  CH := Y + M - (I + G + X) 
+
+# Profit of firms (before investment)
+PROF := py * Y - w * L - p_K{-1}*K{-1}*(delta + r_K{-1})
+
+py := p
+py_n := p
+py_e := p
+
+pm := p
+pw := p
+
+Phi_M  := M / (Y + M) / ((pm / p) ^ (-rho_M))
+
+WD := X / ((py / pw) ^ (-rho_X))  			
+
+SAV_ROW := pm * M - py * X

@@ -1,0 +1,133 @@
+##### Endogenous variables' equations
+
+#### Producers
+
+##! Production (GDP)
+Y = CH + I + G
+
+##! Notional labor demand 
+L_n = (Y / PROG_L) * ((Phi_L) ^ rho_KL) * ((w   / PROG_L)/ c_Y ) ^ (-rho_KL)
+
+
+##! Notional capital demand 
+K_n = (Y / PROG_K) * ((Phi_K) ^ rho_KL) * ((c_K / PROG_K)/ c_Y ) ^ (-rho_KL)
+
+
+##! Investment
+d(log(I)) = ADJUST_I_Kn * d(log(K_n)) + ADJUST_I_I1 * d(log(I{-1})) +  ADJUST_I_KnK1 * log(K_n{-1}/K{-1}) - ADJUST_I_rK * d(r-d(p)/p{-1})
+
+##! Capital stock
+K = K{-1} * (1 - delta) + I{-1}
+
+##! Notional production price
+p_n * Y = c_Y * Y * (1 + m_up)
+# p_n * Y = c_Y * Y * (1 + m_up )   # Activate this equation, if we want to simulate a shock on the mark-up via dm_up
+
+##! Notional mark-up
+d(log(1 + m_up_n)) = rho_mupn_Ln * d(log(L_n/L)) + rho_mupn_Kn * d(log(K_n/K))
+
+##! Notional unit cost production cost
+c_Y * Y = w * L_n + c_K * K_n
+
+##! Capital cost
+c_K * K = p_K{-1}*K{-1}*(delta + r_K{-1})
+
+##! Average price of the accumulated capital stock
+p_K * K = p_K{-1}*K{-1}*(1 - delta) + p{-1}*I{-1}
+
+##! Average interest rate paid on the debt
+r_K * p_K*K = r_K{-1}*p_K{-1}*K{-1}*(1 - delta) + p{-1} * I{-1} * r{-1}
+
+##! Profit of firms (before investment)
+PROF = p * Y - w * L - c_K * K
+
+##! Firms' savings
+SAV_F = PROF - DIV - p * I
+
+##! Firms' bank debt
+DEBT_F = DEBT_F{-1} * (1 - Phi_RD_F{-1}) - SAV_F
+
+#### Households
+##! Notional households consumption
+CH_n * p = (1 - sigma) * INC * (1 - t_inc)
+
+##! Households' income
+INC = (w * L + DIV)
+
+##! Notional dividend for households
+DIV_n = PROF
+
+##! Notional propensity to save equation 
+d(log(1 - sigma_n)) = rho_sigma_U * d(U) - rho_sigma_r * d(r) + rho_sigma_p * d(d(p)/p{-1}) - rho_sigma_DEBT * d(log(DEBT_G/(p*Y)))
+
+##!  Households' savings
+SAV_H = INC * (1 - t_inc) - p * CH
+
+##! Households' total wealth
+WEALTH = WEALTH{-1} + SAV_H
+
+#### Government and Central Bank
+
+##! Notional interest rate of the Central Bank (Taylor reaction function)
+d(r_n) =  rho_rn_p * d(d(p)/p{-1}) - rho_rn_U * d(U)
+
+##! Notional income tax rate
+d(t_inc_n) = rho_tinc_debt * d(DEBT_G / (p * Y)) 
+
+##! Government's savings
+SAV_G = t_inc * INC - p*G - DEBT_G{-1}*(Phi_RD_G{-1} + r_DEBT_G{-1}) 
+
+##! Average interest rate paid on the total Government's debt  
+d(r_DEBT_G) = d(r)
+
+##! Total Government's debt
+DEBT_G = DEBT_G{-1}*(1-Phi_RD_G{-1}) - SAV_G
+
+#### Labor market
+
+##! Notional wage (WS or Phillips curve)
+d(log(w_n)) = rho_wn + rho_wn_pe * d(log(p_e)) + rho_wn_PROGL * d(log(PROG_L)) - rho_wn_U * U - rho_wn_dU * d(U)
+
+##! Unemployment rate
+U = 1 - L/LF
+
+#### Adjustments
+##! Wage
+d(log(w)) = ADJUST_W_Wn * d(log(w_n)) + ADJUST_W_W1 * d(log(w{-1})) - ADJUST_W_W1Wn1*log(w{-1}/w_n{-1})
+
+##! Production price
+log(p) = ADJUST_P_Pn * log(p_n) + (1 - ADJUST_P_Pn) * (log(p{-1}) + d(log(p_e)))
+
+##! Expected production price inflation
+d(log(p_e)) = ADJUST_Pe_Pe1 * d(log(p_e{-1})) + ADJUST_Pe_P1 * d(log(p{-1})) + ADJUST_Pe_Pn * d(log(p_n))
+
+##! Households final consumption
+log(CH) = ADJUST_CH_CHn * log(CH_n) + (1 - ADJUST_CH_CHn) * (log(CH{-1}) + d(log(CH_e)))
+
+##! Expected households final consumption growth
+d(log(CH_e)) = ADJUST_CHe_CHe1 * d(log(CH_e{-1})) + ADJUST_CHe_CH1 * d(log(CH{-1})) + ADJUST_CHe_CHn * d(log(CH_n))
+
+##! Labor
+log(L) = ADJUST_L_Ln * log(L_n) + (1 - ADJUST_L_Ln) * (log(L{-1}) + d(log(L_e)))
+
+##! Expected labor growth
+d(log(L_e)) = ADJUST_Le_Le1 * d(log(L_e{-1})) + ADJUST_Le_L1 * d(log(L{-1})) + ADJUST_Le_Ln * d(log(L_n))
+
+##! Dividend for households
+log(DIV) = ADJUST_DIV_DIVn * log(DIV_n) + (1 - ADJUST_DIV_DIVn) * (log(DIV{-1}) + d(log(DIV_e)))
+
+##! Expected dividend for households
+d(log(DIV_e)) = ADJUST_DIVe_DIVe1 * d(log(DIV_e{-1})) + ADJUST_DIVe_DIV1 * d(log(DIV{-1})) + ADJUST_DIVe_DIVn * d(log(DIV_n))
+
+##! Interest rate of the Central Bank
+r = ADJUST_r * r_n + (1 - ADJUST_r) * r{-1}
+
+##! Propensity to save
+sigma = ADJUST_sigma * sigma_n + (1 - ADJUST_sigma) * sigma{-1}
+
+##! Mark-up
+m_up = ADJUST_m_up * m_up_n + (1 - ADJUST_m_up) * m_up{-1}
+
+##! Income tax rate
+t_inc = ADJUST_t_inc * t_inc_n + (1 - ADJUST_t_inc) * t_inc{-1}
+

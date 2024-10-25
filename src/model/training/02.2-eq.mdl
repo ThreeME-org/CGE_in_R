@@ -1,0 +1,28 @@
+##### Endogenous variables' equations
+
+##! Production (GDP)
+Y = CH + I + G
+
+##! Price 
+p * Y = w*L + p*(delta + r)*K_n
+
+
+##! Households'consumption
+CH = (1 - sigma) * (w*L + p*r*K) / p
+# d(log(CH)) = d(log(Y{-1}))
+
+##! Labor demand
+L = (Y / PROG_L) * ((Phi_L) ^ rho) * (w/(p * PROG_L)) ^ (-rho)
+
+
+##! Capital demand (notional level from cost minimization assuming a CES function)
+K_n = (Y / PROG_K) * ((Phi_K) ^ rho) * ((delta + r)/PROG_K) ^ (-rho)
+
+
+##! Capital (effective level from accumulation equation)
+d(K) = I{-1} - delta * K{-1}
+
+##! Investment 
+d(log(I)) = d(log(K_n{-1})) + alpha_I_Kn * log(K_n{-1}/K{-1})
+
+

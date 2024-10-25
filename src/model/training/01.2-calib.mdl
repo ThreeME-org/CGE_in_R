@@ -1,0 +1,11 @@
+# Long-term growth
+mu := 0.02
+
+Y := 100 * (1 + mu)^(@year - %baseyear)
+
+CH := 0.6 * Y{-1}
+
+I := 0.25 * Y
+
+G := Y - CH - I
+

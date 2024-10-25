@@ -1,0 +1,17 @@
+##### Basic model
+
+##! Production (GDP)
+Y = CH + I + G
+
+##! Households consumption
+CH = 0.6 * Y{-1}
+
+##! Investment
+I = 0.25 * Y
+									# Equivalent to: 
+									# d(log(I)) = d(log(Y))
+									# Because :
+									# log(I) = log(0.25 * Y)
+									# log(I) = log(0.25) + log(Y)
+									# log(I) - log(I{-1}) = log(0.25) + log(Y) - (log(0.25) + log(Y{-1}))
+									# d(log(I)) = d(log(Y))		

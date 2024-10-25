@@ -1,0 +1,31 @@
+#### Additionnal equations in open economy
+
+##! Production (GDP) in open economy
+@over Y + M = CH + I + G + X
+
+##! Average user price in open economy
+@over p * (Y + M) = py * Y + pm * M
+
+##! Notional production price in open economy
+py_n * Y = c_Y * Y * (1 + m_up)
+# py_n * Y = c_Y * Y * (1 + m_up )   # Activate this equation, if we want to simulate a shock on the mark-up via dm_up
+
+##! Profit of firms (before investment) in open economy
+@over PROF = py * Y - w * L - c_K * K
+
+##! Production price in open economy
+log(py) = ADJUST_P_Pny * log(py_n) + (1 - ADJUST_P_Pny) * (log(py{-1}) + d(log(py_e)))
+
+##! Expected production price inflation in open economy
+d(log(py_e)) = ADJUST_Pe_Pe1y * d(log(py_e{-1})) + ADJUST_Pe_P1y * d(log(py{-1})) + ADJUST_Pe_Pny * d(log(py_n))
+
+#### International trade
+##! Imports
+M = (Y + M) * Phi_M  * (pm / p) ^ (-rho_M) 
+
+##! Exports
+X  = WD  * (py / pw) ^ (-rho_X)				
+
+##! Saving of the Rest of the World
+SAV_ROW = pm * M - py * X
+# (Trade balance: + means trade deficit for the national economy)

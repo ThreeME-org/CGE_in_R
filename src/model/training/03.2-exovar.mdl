@@ -1,0 +1,140 @@
+##! Growth rate of labor productivity
+GR_PROG_L
+
+##! Growth rate of population
+GR_POP
+
+##! Growth rate of prices (Inflation)
+GR_PRICE
+
+##! K-L elasticity of substitution
+rho_KL 
+
+##! Capital depreciation rate
+delta
+
+##! Elasticity of interest rate to inflation (Taylor fonction)
+rho_rn_p 
+
+##! Elasticity of interest rate to unemployment (Taylor fonction)
+rho_rn_U
+
+##! Elasticity of the propensity to save to the real interest rate
+rho_sigma_p
+
+##! Elasticity of the propensity to save to the unemployment rate
+rho_sigma_U
+
+##! Elasticity of the propensity to save to the ratio of governement's debt to GDP
+rho_sigma_DEBT
+
+##! Elasticity of Mark-up to the ratio of notional labor to labor
+rho_mupn_Ln 
+
+##! Elasticity of Mark-up to the ratio of notional capital to capital
+rho_mupn_Kn
+
+##!  Elasticity of the income tax rate to the debt ratio
+rho_tinc_debt
+
+##! Elasticity of notional wage to expected production price   
+rho_wn_pe 
+
+##! Elasticity of notional wage to labor productivity
+rho_wn_PROGL
+
+##! Elasticity of notional wage to unemployment
+rho_wn_U 
+
+##! Elasticity of notional wage to the variation of unemployment
+rho_wn_dU
+
+##! Elasticity of notional wage to unemployment
+rho_wn_U
+
+##! Elasticity of the income tax rate to the debt ratio
+rho_tinc_debt
+
+##! Elasticity of investment to notional capital (Adjustment parameter)
+ADJUST_I_Kn 
+
+##! Elasticity of investment to previous investment (Adjustment parameter)
+ADJUST_I_I1
+
+##! Elasticity of investment to the ratio of previous notional capital to previous capital (Adjustment parameter)
+ADJUST_I_KnK1 
+
+##! Elasticity of investment to interest rate (Adjustment parameter)
+ADJUST_I_rK 
+
+##! Elasticity of interest rate to notional interest rate (Adjustment parameter)
+ADJUST_r 
+
+##! Elasticity of propensity to save to notional propensity to save  (Adjustment parameter)
+ADJUST_sigma 
+
+##! Elasticity of mark-up to notional mark-up  (Adjustment parameter)
+ADJUST_m_up 
+
+##! Elasticity of income to notional income  (Adjustment parameter)
+ADJUST_t_inc 
+
+##! Elasticity of production price to nominal poduction price (Adjustment parameter)
+ADJUST_P_Pn 
+
+##! Elasticity of expected production price to previous expected poduction price (Adjustment parameter)
+ADJUST_Pe_Pe1 
+
+##! Elasticity of expected production price to previous poduction price (Adjustment parameter)
+ADJUST_Pe_P1 
+
+##! Elasticity of labor to notional labor (Adjustment parameter)
+ADJUST_L_Ln 
+
+##! Elasticity of expected labor to previous expected notional labor (Adjustment parameter)
+ADJUST_Le_Le1 
+
+##! Elasticity of expected labor to previous labor (Adjustment parameter)
+ADJUST_Le_L1 
+
+##! Elasticity of wage to notional wage (Adjustment parameter)
+ADJUST_W_Wn 
+
+##! Elasticity of wage to the ratio of previous notional wage to previous (Adjustment parameter)
+ADJUST_W_W1Wn1 
+
+##! Elasticity of household consumption to notional household consumption (Adjustment parameter)
+ADJUST_CH_CHn 
+
+##! Elasticity of expected household consumption growth to previous expected household consumption (Adjustment parameter)
+ADJUST_CHe_CHe1 
+
+##! Elasticity of expected household consumption growth to previous household consumption (Adjustment parameter)
+ADJUST_CHe_CH1 
+
+##! Elasticity of dividend for housheold to notional dividend for household (Adjustment parameter)
+ADJUST_DIV_DIVn 
+
+##! Elasticity of expected dividend for household to previous expected dividend for household (Adjustment parameter)
+ADJUST_DIVe_DIVe1 
+
+##! Elasticity of expected dividend for household to previous dividend for household (Adjustment parameter)
+ADJUST_DIVe_DIV1 
+
+##! Interest rate paid on the Firm's debt (average)
+Phi_RD_F
+
+##! Interest rate paid on the Government's debt (average)
+Phi_RD_G
+
+##! Variation of Mark-up
+dm_up
+
+##! World demand
+WD
+
+##! Elasticity of substitution of imports (open economy)
+rho_M
+
+##! Elasticity of substitution of exports (open economy)
+rho_X

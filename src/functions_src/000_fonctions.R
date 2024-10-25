@@ -1,0 +1,1 @@
+  cat("Les fonctions sont sur le package ermeeth. \n") 

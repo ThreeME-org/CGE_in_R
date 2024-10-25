@@ -1,0 +1,182 @@
+---
+title: "Basic Results"
+author: "ThreeME Team"
+format: 
+ html:
+  center: true
+  navigation-mode: linear
+  width: 1200
+  height: 700
+params:
+  project_name: "frelance"
+  startyear: 2020
+  endyear: 2050
+  template_default: ofce
+  country_name: "France"
+  scenario: !expr c("baseline","frelance")  # List of scenarii to be plotted
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  results = "hide"
+)
+
+```
+
+```{r Plots default options}
+#| label: load_parameters and basic files
+
+source("src/setup.R")
+options(ofce.base_family = "Arial")
+
+
+startyear <- params$startyear
+endyear <- params$endyear
+template_default <- params$template_default
+project_name <- params$project_name
+
+scenarios <- c("baseline",params$scenario) |> unique()
+
+
+data_full <- readRDS(file.path("data","output",paste0(project_name,".rds")))
+
+```
+
+# Transforming data before making tables or graphs
+
+Below is the code for transforming data in relative difference, growth rate and index.
+
+Practice and add line in the `mutate` function !
+
+```{r}
+#| label: transf-data
+#| echo: true
+
+variables_selection = c("GDP","I","CH", "EMS")
+selection <- filter(data_full, variable %in% variables_selection, scenario %in% scenarios) |> 
+  group_by(scenario, variable) |> dplyr::arrange(year) |> 
+
+  mutate(rel_dif     = values/values_ref - 1 , # Relative difference between every shock scenario and the baseline scenario 
+         growth_rate = values/lag(values) -  1 , # Growth rate for every scenario (baseline and shock)
+         index_startyear = values/values[which(year == startyear)] # Index = 1 at startyear for every scenario (baseline and shock) 
+  
+         ) |> 
+  filter(year >= startyear & year <= endyear) |> 
+  # filter(index_scen == 0) |>
+  ungroup()
+
+```
+
+# Table results
+
+## A basic table example:
+
+In the "#\| tbl-cap:" option, you can define dynamics titles. You need to use `!expr`. Below `endyear` is replaced by `r endyear` (value defined in a previous chunck) .
+
+```{r}
+#| label: tbl-data_endyear
+#| tbl-cap: !expr 'paste("A selection of variables for the year", endyear)'
+#| results: asis
+#| echo: fenced
+
+selection_for_table <-  selection |> filter(variable %in% c("EMS", "GDP"), year %in% c(endyear)) |> select(variable, scenario, values, index_startyear) |> arrange(variable) |> 
+                      mutate_if(is.numeric, round, digits=2)
+
+table_endyear <- flextable(selection_for_table)
+
+table_endyear
+```
+
+## Same example but for year `r startyear`
+
+```{r}
+#| label: tbl-data_startyear
+#| tbl-cap: !expr 'paste("A selection of variables for the year", startyear)'
+#| results: asis
+#| echo: true
+
+selection_for_table <-  selection |> filter(variable %in% c("EMS", "GDP"), year %in% c(startyear)) |> select(variable, scenario, values, index_startyear) |> arrange(variable) |> 
+                        mutate_if(is.numeric, round, digits=1)
+
+table_startyear <- flextable(selection_for_table)
+
+table_startyear 
+```
+
+# Graph results
+
+## In relative difference for several scenarii (excluding baseline)
+
+Scenarii are compared to the reference scenario, indexed by 1. The baseline scenario is excluded using `filter(index_scen == 0)`.
+
+```{r}
+#| label: fig-multi-rel_dif
+#| fig-cap: GDP, Investment and consumption (relative to baseline)
+#| echo: true
+
+graph_rel_dif <- ggplot(selection |> filter(index_scen == 0), aes(y =rel_dif, x = year)) +
+                  geom_line(aes(linetype = scenario, colour = variable))
+
+graph_rel_dif
+```
+
+## In growth rate for several scenarii (including baseline)
+
+Here the reference scenario is not filtered. A theme has been add to improve the graph compared to @fig-multi-rel_dif.
+
+```{r}
+#| label: fig-multi-gr
+#| fig-cap: GDP, Investment and consumption (in growth rate)
+#| echo: true
+
+graph_gr <- ggplot(selection, aes(y = growth_rate, x = year)) +
+                geom_line(aes(linetype = scenario, colour = variable)) +
+  
+  theme_ofce()  +
+  theme(legend.title = element_blank(),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank())
+
+graph_gr
+```
+
+
+## In growth rate for several scenarii (including baseline)
+
+Here the reference scenario is not filtered. A theme has been add to improve the graph compared to @fig-multi-rel_dif.
+
+```{r}
+#| label: fig-multi-index
+#| fig-cap: !expr 'paste("GDP, Investment and consumption (", startyear,"= 1)")'
+#| echo: true
+
+graph_index <- ggplot(selection |> filter(variable %in% c("EMS", "GDP")), aes(y = index_startyear, x = year)) +
+                      geom_line(aes(linetype = scenario, colour = variable))
+
+graph_index
+```
+
+
+
+
+```{r}
+#| label: save_bank
+#| include: false
+
+save(list = ls(pattern = "^graph_.+$|^table_.+$"),
+     
+     file = str_c("results/output_banks/basic_bank_",project_name,".rda") 
+)
+
+
+
+
+
+```

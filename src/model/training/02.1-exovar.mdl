@@ -1,0 +1,27 @@
+##! Capital depreciation ratio
+Delta
+
+##! Capital share (CES function)
+Phi_K
+
+##! Labor share (CES function)
+Phi_L
+
+##! Capital technical progress (CES function)
+PROG_K
+
+##! Labor technical progress (CES function)
+PROG_L
+
+##! Elasticity of substitution between capital and labor (CES function)
+rho
+
+##! Households' propensity to save
+sigma
+
+##! Public spendings
+G
+
+##! Labor demand
+L
+

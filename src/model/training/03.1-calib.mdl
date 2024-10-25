@@ -1,0 +1,213 @@
+## Long term equilibrium
+# Growth rate of labor productivity
+GR_PROG_L := 0.01
+
+# Growth rate of population
+GR_POP := 0.005
+
+# Growth rate of prices (Inflation)
+GR_PRICE := 0.02
+
+# Long-term growth
+mu := (1 + GR_PROG_L)*(1 + GR_POP) - 1
+GR_nml := (1+mu) * (1 + GR_PRICE) - 1
+GR_w_nml := (1 + GR_PROG_L) * (1 + GR_PRICE) - 1
+
+## Model parameters
+
+# K-L elasticity of substitution
+rho_KL := 0.5
+
+# Capital depreciation rate
+delta := 0.08
+
+Phi_RD_F := delta
+
+# Interest rate equation parameters (Taylor fonction)
+rho_rn_p := 1.5
+rho_rn_U := 0.5
+
+# Elasticity of the propensity to save to the interest rate
+rho_sigma_r := 1.0
+rho_sigma_p := 1.0
+rho_sigma_U	:= 1.5
+rho_sigma_DEBT	:= 0.0
+
+# Mark-up equation parameters
+rho_mupn_Ln := Phi_L*0.75
+rho_mupn_Kn := Phi_K*0.75
+
+# Wage equation parameters   
+rho_wn_pe := 1
+rho_wn_PROGL := 1
+rho_wn_U := 0.0
+rho_wn_dU := 0.6
+rho_wn := log(1 + GR_W_nml) - rho_wn_pe * log(1 + GR_PRICE) - rho_wn_PROGL * log(1 + GR_PROG_L) + rho_wn_U * U
+
+# Elasticity of the income tax rate to the debt ratio
+rho_tinc_debt := 0.05
+
+# Adjustment parameters
+ADJUST_I_Kn := 1
+ADJUST_I_I1 := 1 - ADJUST_I_Kn
+ADJUST_I_KnK1 := 0.05
+ADJUST_I_rK := 0.0
+
+ADJUST_r := 0.5
+
+ADJUST_sigma := 0.5
+
+ADJUST_m_up := 0.5
+
+ADJUST_t_inc := 0.1
+
+ADJUST_P_Pn := 0.5
+ADJUST_Pe_Pe1 := 0.7
+ADJUST_Pe_P1 := 0.1
+ADJUST_Pe_Pn := 1 - ADJUST_Pe_Pe1 - ADJUST_Pe_P1
+
+ADJUST_L_Ln := 0.5
+ADJUST_Le_Le1 := 0.7
+ADJUST_Le_L1 := 0.1
+ADJUST_Le_Ln := 1 - ADJUST_Le_Le1 - ADJUST_Le_L1
+
+ADJUST_W_Wn := 0.4
+ADJUST_W_W1 := 1 - ADJUST_W_Wn
+ADJUST_W_W1Wn1 := 0.05
+
+
+ADJUST_CH_CHn := 0.6
+ADJUST_CHe_CHe1 := 0.7
+ADJUST_CHe_CH1 := 0.1
+ADJUST_CHe_CHn := 1 - ADJUST_CHe_CHe1 - ADJUST_CHe_CH1
+
+ADJUST_DIV_DIVn := 0.2
+ADJUST_DIVe_DIVe1 := 0.7
+ADJUST_DIVe_DIV1 := 0.1
+ADJUST_DIVe_DIVn := 1 - ADJUST_DIVe_DIVe1 - ADJUST_DIVe_DIV1
+
+########################################################
+## Variables calibrated on "real data"
+########################################################
+
+# Total government's debt
+DEBT_G := 0.6 * p * Y
+
+## Interest rates
+
+# Of the Central bank
+r := (1 + mu)*(1 + GR_PRICE) - 1 - 0.01
+
+# Paid on the Government's (average)
+r_DEBT_G := r
+
+Phi_RD_G := 1/20   		
+
+# (Average) interest rate paid on the capital stock
+r_K := r
+
+# Labor
+L :=  1000 * (1 + GR_POP)^(@year - %baseyear)
+LF := 1100 * (1 + GR_POP)^(@year - %baseyear)
+U := 1 - L/LF							
+
+# Production
+Y := 100 * (1 + mu)^(@year - %baseyear)
+
+# Investment
+I :=  17 * (1 + mu)^(@year - %baseyear)
+
+# Public spending
+G :=   23 * (1 + mu)^(@year - %baseyear)
+
+# Price
+p := 1 * (1 + GR_PRICE)^(@year - %baseyear)
+
+# Wage
+w * L_n := 0.65*P*Y
+
+########################################################
+## Calibration of the other variables ##################
+########################################################
+# These variables are calibrated using the equations of the model
+
+# Calibration of certain variable assuming the steady state
+
+# (Average) price of the capital stock
+p_K := p * (mu + delta) / (GR_nml + delta)
+
+# Debt of the Governement
+DEBT_F := - SAV_F * (1 + GR_nml) / (GR_nml + Phi_RD_F{-1})
+
+# Households' total wealth
+WEALTH := SAV_H * (1 + GR_nml) / GR_nml 
+
+# Capital Stock
+K := I / (mu + delta)
+
+######################### Producer ##################### 
+
+# Mark-up
+(1 + m_up_n) := p_n * Y / (c_Y * Y)
+
+m_up := m_up_n
+
+
+# Labour productivity
+PROG_L := Y / L 
+
+# Capital productivity
+PROG_K := Y / K
+
+# (Notional) unit cost production cost
+c_Y * Y := w * L_n + c_K * K_n
+
+# Capital cost
+c_K * K := p_K{-1}*K{-1}*(delta + r_K{-1})
+
+# Labour share in production function
+Phi_L := w / c_Y / PROG_L
+
+# Capital share in production function
+Phi_K := c_K / c_Y / PROG_K
+
+# Profit of firms (before investment)
+PROF := p * Y - w * L - p_K{-1}*K{-1}*(delta + r_K{-1})
+
+# Firms' savings
+SAV_F := PROF - DIV - p * I
+
+######################### Households ##################### 
+# Consumption
+CH := Y - I - G
+
+# Long-term savings rate
+(1 - sigma) := CH_n * p / (INC * (1 - t_inc))
+
+dsigma := 0
+
+# Households' income
+INC := (w * L + DIV)
+
+# Income tax rate
+t_inc * INC := p*G - DEBT_G * (GR_nml - r_DEBT_G{-1}) / (1 + GR_nml)
+t_inc_n := t_inc
+
+# Dividend for households
+DIV := PROF
+
+# Households' savings
+SAV_H := INC * (1 - t_inc) - p * CH
+
+######################### Goverment ##################### 
+
+# Savings (deficit) of the government 
+SAV_G := t_inc * INC - p*G - DEBT_G{-1}*(Phi_RD_G{-1} + r_DEBT_G{-1}) 
+
+#######################
+
+# Notional and expected variables
+|V|_n := |V| where V in p CH L K w DIV r sigma
+|V|_e := |V| where V in p CH L K w DIV
+
+

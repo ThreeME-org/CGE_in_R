@@ -1,0 +1,18 @@
+# Unused file
+# Dynamo compiler require a file 
+# See line 8 of "dynamo.R"
+#
+#    "# CountryCalib",
+#    str_c(threeme_path, "data/shadowfile_readme.mdl"),
+#    "",
+#    "# ListsParameters",
+#   # str_c(threeme_path, "model/R_lists_", iso3, ".mdl"),
+#   # str_c(threeme_path, "model/lists.mdl"),
+#   # str_c(threeme_path, "data/parameters.mdl"),
+ 
+# No need to put information in "# CountryCalib" or "# ListsParameters"
+# But bug when "# CountryCalib"  is empty
+# "# ListsParameters" can be empty
+# Every thing is in config.R : calib_file
+# It look that Dynamo is a bit (0.2 second) faster if the str_c("data/R_Calibration_", iso3, ".mdl") is put first.
+# This file can be deleted with dynamo is corrected.
