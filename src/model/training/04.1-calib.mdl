@@ -1,0 +1,8 @@
+Y := 100
+CH := 60
+I := 25
+G := 15
+
+# Use this calibration for public expenditure and have a look at the calibration error. 
+# G := 26
+
