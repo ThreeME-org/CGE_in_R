@@ -1,8 +1,89 @@
-Y := 100
+
 CH := 60
+CH[c01] := 20
+CH[c02] := 40 
+
 I := 25
+I[c01] := 10
+I[c02] := 15 
+
 G := 15
+G[c01] := 5
+G[c02] := 10 
 
-# Use this calibration for public expenditure and have a look at the calibration error. 
-# G := 26
+# CI := 20
+CI[c01,s01] := 2 
+CI[c01,s02] := 5
+CI[c02,s01] := 5
+CI[c02,s02] := 8
 
+
+# Production shares
+phi_Y[c01,s01] := 1
+phi_Y[c01,s02] := 0
+
+phi_Y[c02,s01] := 0
+phi_Y[c02,s02] := 1
+
+
+
+
+##! Production of commodity $c$ 
+Y[c] := CI[c] + CH[c] + I[c] + G[c] 
+
+##! Production of commodity $c$ by sector $s$
+Y[c,s] := phi_Y[c,s] * Y[c]
+
+##! Total production of sector $s$
+Y[s] := sum(Y[c,s] on c) 
+
+##! Intermediate consumption $c$ consumed by sector $s$
+# CI[c,s] := phi_CI[c,s] * Y[s] 
+phi_CI[c,s] := CI[c,s] / Y[s] 
+
+#### Final use
+
+##! Households consumption in commodity $c$ 
+phi_CH[c] := CH[c] / CH 
+# CH[c] := phi_CH[c] * CH 
+
+##! Investment in commodity $c$ 
+phi_I[c] := I[c] / I 
+# I[c] := phi_I[c] * I 
+
+##! Public expenditures in commodity $c$
+phi_G[c] := G[c] / G 
+# G[c] := phi_G[c] * G 
+
+#### Agregates
+
+##! Intermediate consumption of commodity $c$ (agregation over $s$)
+CI[c] := sum(CI[c,s] on s)
+
+##! Intermediate consumption comsummed by sector $s$ (agregation over $c$)
+CI[s] := sum(CI[c,s] on c) 
+
+##! Total intermediate consumption (agregation over commodities)
+CI := sum(CI[c] on c)
+
+##! Total intermediate consumption (agregation over sector)
+CI_bis := sum(CI[s] on s)
+
+##! Total production (agregation over commodities)
+Y := sum(Y[c] on c)
+
+##! Total production (agregation over sectors)
+Y_bis := sum(Y[s] on s)
+
+##! Total production (agregation over agregated uses)
+Y_ter := CI + CH + I + G
+
+#### Gross Domestic Product (GDP)
+##! Value added of sector $s$
+VA[s] := Y[s] - CI[s]
+
+##! Value added or GDP (production or supply definition)
+VA := sum(VA[s] on s)
+
+##! Value added or GDP (expenditure or use definition)
+VA := CH + I + G
