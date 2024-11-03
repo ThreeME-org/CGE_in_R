@@ -9,14 +9,14 @@
 
 
 iso3 = "FRA"                   
-classification = "c8_s8" 
-model_folder = "threeme"
-project_name = "tests_4"
+classification = "c0_s0" 
+model_folder = "training"
+project_name = "session3"
 
 
 scenario_baseline = "baseline-steady" # Maybe modified if the baseline needs to integrate some user-specified trajectories of exogenous variables.  All scenarii files are  located in configuration/scenarii_calib
-scenario = c("ct1", "expg1") |> 
-  set_names(c("Increase of carbon tax  ","Increase in government spending of 1% of GDP"))
+scenario = c("progl") |> 
+  set_names(c("Increase government spending of 1% of GDP"))
 ## Input the base year used for the calibration
 baseyear = 2019
 ## Set the end of the sample
@@ -42,72 +42,31 @@ variables_to_keep = c() ## leave empty to keep all variables.
 
 ## Lists files (warning: if more than one, place "lists.mdl" last)
 lists_files = c(
-  str_c("R_lists_", iso3,"_",classification, ".mdl"),             # ALL VERSIONS
+  # str_c("R_lists_", iso3,"_",classification, ".mdl"),             # ALL VERSIONS
   "lists.mdl"                                                     # ALL VERSIONS
 )
 
-## Calibration files (used to initialize variables)
-calib_files = c(lists_files,
-                str_c("data/R_Calibration_", iso3,"_",classification,"_",baseyear, ".mdl"),   # ALL VERSIONS
-                "data/parameters.mdl",                     # ALL VERSIONS
-                
-                ## Calibration of elasticity of substitutions (Producer)
-                "data/elasticities.mdl",                   # ALL VERSIONS
-                "data/Exception_NestedCES_data.mdl",     # NESTED CES (PRODUCER) VERSION
-                "data/round0.mdl",                         # ALL VERSIONS
-                "data/Prices_data.mdl",                    # ALL VERSIONS
-                "data/SU_data.mdl",                        # ALL VERSIONS
-                "data/Special_data.mdl",                   # ALL VERSIONS
-                "data/Other_data.mdl",                     # ALL VERSIONS
-                # "data/Exception_taxes_prices_data.mdl",    # ALL VERSIONS (when commodity tax rate per user)
-                "data/Exception_taxes_prices_new_data.mdl",    # New version where taxes are divided by different users
-                
-                ## Optional Consumer blocks
-                # "data/Exception_ConsumerNested_data.mdl",  # NESTED CES (CONSUMER) VERSION
-                
-                "data/Exception_Other_data.mdl",           # ALL VERSIONS
-                # "data/Exception_energybalance_simple.mdl",  # ALL VERSIONS: Only net energy production (Y_TOE). Gross primary energy production (YG_TOE)
-                
-                "data/Exception_ETS_data.mdl",           # ETS
-                
-                "ENDOFLINE.mdl"                          # ALL VERSIONS
+calib_files <- c(lists_files,
+                 "03.1-calib.mdl",     
+                 
+                 "ENDOFLINE.mdl"       # ALL VERSIONS: empty file
+                 
 )
 
 # Model files 
 model_files = c(lists_files,
-                "SU.mdl",                     # ALL VERSIONS 
-                "Prices.mdl",                 # ALL VERSIONS
-                "Producer.mdl",               # ALL VERSIONS
-                "Consumer.mdl",               # ALL VERSIONS
-                "Government.mdl",             # ALL VERSIONS
-                "Trade_inter.mdl",            # ALL VERSIONS
-                "Demography.mdl",             # ALL VERSIONS
-                "Adjustments.mdl",            # ALL VERSIONS
-                "Verif.mdl",                  # ALL VERSIONS
-                "ghg_emissions.mdl",          # ALL VERSIONS
+                "03.1-eq_keynes_basic.mdl",        
                 
-                # Option energy balance blocks
-                "energybalance.mdl",          # ALL VERSIONS
                 
-                ## Exception files ALWAYS at the end because of the @overs
-                # "Exception_taxes_prices.mdl",           # ALL VERSIONS
-                "Exception_taxes_prices_new.mdl",           # New version where taxes are divided by different users
-                # "Exception_NestedCES.mdl",            # NESTED CES (PRODUCER) VERSION
-                # "Exception_ConsumerNested.mdl",       # NESTED CES (CONSUMER) VERSION
+                "ENDOFLINE.mdl"        # ALL VERSIONS: empty file
                 
-                "Exception_BugSolverR.mdl",      # TEMPORARY : Overwrite equations creating Bugs with R solver
-                "Exception_Other.mdl",                   # ALL VERSIONS
-                
-                # "Exception_ETS.mdl",           # ETS
-                
-                "ENDOFLINE.mdl"                          # ALL VERSIONS
 )
 
 #########################################
 # 3. Solver configuration
 #########################################
 
-Rsolver = FALSE    # If TRUE, will try to Use R solver if possible; If FALSE EViews will be used
+Rsolver = TRUE    # If TRUE, will try to Use R solver if possible; If FALSE EViews will be used
 warning = FALSE     # If TRUE, will provide solver warning messages
 tolerance_calib_check = 10^-3
 skip_compiler = FALSE # Set to TRUE to skip the compiler part. However, you'll need to ensure to have the correct model.prg and calib.csv files in the src/compiler folder 

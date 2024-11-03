@@ -6,7 +6,7 @@ rm(list = ls())
 source(file.path("src","setup.R"))
 
 
-  config <- readconfig(input_config_file = file.path("configuration", "config_lunchseminar.R") ,
+  config <- readconfig(input_config_file = file.path("configuration", "config_input_MODEL.R") ,
                       output_config_file = file.path("configuration", "config_output_MODEL.R")
                      )
 
@@ -22,6 +22,9 @@ source(file.path("src","setup.R"))
 ## 2. Run simulations
 
 data_full <- run_simulations(configuration = config)
+
+data_full |> filter(variables %in% c("Y")) |> ggplot(aes(y = (values/values_ref)-1,x = year)) +
+  geom_line(aes(linetype = scenario))
 
 ## 3. Les sorties 
 

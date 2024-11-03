@@ -1,6 +1,6 @@
 # List and sets
 
-%baseyear := 2020
+%baseyear := 2019
 
 # Sectors and commodities
 %list_sec := s01 s02
