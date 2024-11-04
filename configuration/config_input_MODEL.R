@@ -9,13 +9,13 @@
 
 
 iso3 = "FRA"                   
-classification = "c0_s0" 
+classification = "c2_s2" 
 model_folder = "training"
-project_name = "session3"
+project_name = "session1"
 
 
 scenario_baseline = "baseline-steady" # Maybe modified if the baseline needs to integrate some user-specified trajectories of exogenous variables.  All scenarii files are  located in configuration/scenarii_calib
-scenario = c("progl") |> 
+scenario = c("g") |> 
   set_names(c("Increase government spending of 1% of GDP"))
 ## Input the base year used for the calibration
 baseyear = 2019
@@ -47,15 +47,18 @@ lists_files = c(
 )
 
 calib_files <- c(lists_files,
-                 "03.1-calib.mdl",     
                  
+                "03.1-calib.mdl",     
+                "03.1-calib_exception_open.mdl",
+                
                  "ENDOFLINE.mdl"       # ALL VERSIONS: empty file
                  
 )
 
 # Model files 
 model_files = c(lists_files,
-                "03.1-eq_keynes_basic.mdl",        
+                "03.1-eq_neokeynes.mdl",     
+                "03.1-eq_neokeynes_exception_open.mdl",
                 
                 
                 "ENDOFLINE.mdl"        # ALL VERSIONS: empty file

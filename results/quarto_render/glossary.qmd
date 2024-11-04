@@ -1,0 +1,23 @@
+## Glossary of variables
+ 
+| | | |
+|:---:|:----------- |---------: |
+NA
+| $CI$ | Total intermediate consumption (agregation over commodities) | [-@eq-04_1_eq_mdlCI]
+| $CI^{,bis}$ | Total intermediate consumption (agregation over sector) | [-@eq-04_1_eq_mdlCI_bis]
+NA
+NA
+NA
+NA
+NA
+| $VA$ | Value added or GDP (expenditure or use definition) | [-@eq-04_1_eq_mdlVA]
+| $VA$ | Value added or GDP (expenditure or use definition) | [-@eq-04_1_eq_mdlVA]
+| $VA$ | Value added or GDP (expenditure or use definition) | [-@eq-04_1_eq_mdlVA]
+| $VA$ | Value added or GDP (expenditure or use definition) | [-@eq-04_1_eq_mdlVA]
+NA
+| $Y$ | Total production (agregation over commodities) | [-@eq-04_1_eq_mdlY]
+| $Y^{,bis}$ | Total production (agregation over sectors) | [-@eq-04_1_eq_mdlY_bis]
+| $Y^{,ter}$ | Total production (agregation over agregated uses) | [-@eq-04_1_eq_mdlY_ter]
+NA
+NA
+NA

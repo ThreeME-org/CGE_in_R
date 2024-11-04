@@ -1,9 +1,13 @@
 readconfig <- function(input_config_file = config_main ,
-                               output_config_file = config_quarto){
+                       output_config_file = config_quarto){
   
-  ##CHECKS HERE
+  ## CHECKS HERE
   source(input_config_file,local = TRUE)
   source(output_config_file,local = TRUE)
+  
+  ### Check calib files exist
+  
+  
   
   if (automated_shocks){
     ## if automated shocks, generate range list using 

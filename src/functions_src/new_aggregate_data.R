@@ -1,7 +1,7 @@
 aggregate_com_sec <- function(data=data_full,
                               scenarios = c("baseline",scenario |> unname()),
-                              agg_s_table = read_excel(path = system.file("aggregation_rules.xlsx",package = "ermeeth"), sheet = "sectors"),
-                              agg_c_table = read_excel(path = system.file("aggregation_rules.xlsx",package = "ermeeth"), sheet = "commodities"),
+                              agg_s_table = "aggregation_rules",
+                              agg_c_table = "aggregation_rules",
                               by_com = TRUE,
                               by_sec = TRUE,
                               bridge_com = bridge_commodities,
@@ -13,6 +13,60 @@ aggregate_com_sec <- function(data=data_full,
   # browser()
   og_data = as.data.table(data) |> select(variable,year,all_of(scenarios))
   
+  # Retrieve right version of aggregation rules
+  
+  if(agg_s_table == "aggregation_rules" & agg_s_table == "aggregation_rules"){
+    
+    if(file.exists(file.path("src","bridges", paste0(agg_s_table, ".xlsx")))){
+      agg_s_table <- read_excel(file.path("src","bridges", paste0(agg_s_table, ".xlsx")), sheet = "sectors")
+      agg_c_table <- read_excel(file.path("src","bridges", paste0(agg_c_table, ".xlsx")), sheet = "commodities")
+    }else{
+      # If the aggregation rules are not changed, the program will not pass by get_remote_file()
+      agg_s_table = read_excel(path = system.file("aggregation_rules.xlsx",package = "ermeeth"), sheet = "sectors")
+      agg_c_table = read_excel(path = system.file("aggregation_rules.xlsx",package = "ermeeth"), sheet = "commodities")
+    }
+    
+  }else{
+    if(file.exists(file.path("src","bridges", paste0(agg_s_table, ".csv")))){
+      agg_s_table <- read_csv2(file.path("src","bridges", paste0(agg_s_table, ".csv"))) %>% 
+        filter(sec_com == "sectors") %>% select(-sec_com)
+    }else{
+      safe_get_remote_file <- purrr::safely(ermeeth::get_remote_file)
+      downloader <- safe_get_remote_file(object = paste0(agg_s_table, ".csv"),
+                                         destination.folder = file.path("src","bridges"))
+      if(!is.null(downloader$error)){ # If the file cannot be downloaded
+        ermeeth::message_warning("Aggregation rule cannot be downloaded, using default rule instead.")
+        agg_s_table = read_excel(path = system.file("aggregation_rules.xlsx",package = "ermeeth"), sheet = "sectors")
+      }else if(downloader$result){
+        agg_s_table <- read_csv2(file.path("src","bridges", paste0(agg_s_table, ".csv"))) %>% 
+          filter(sec_com == "sectors") %>% select(-sec_com)
+      }else{ # If the file does not exist on the remote
+        ermeeth::message_warning("Aggregation rule does not exist, using default rule instead.")
+        agg_s_table = read_excel(path = system.file("aggregation_rules.xlsx",package = "ermeeth"), sheet = "sectors")
+      }
+    }
+    
+    if(file.exists(file.path("src","bridges", paste0(agg_c_table, ".csv")))){
+      agg_c_table <- read_csv2(file.path("src","bridges", paste0(agg_c_table, ".csv"))) %>% 
+        filter(sec_com == "commodities") %>% select(-sec_com)
+    }else{
+      safe_get_remote_file <- purrr::safely(ermeeth::get_remote_file)
+      downloader <- safe_get_remote_file(object = paste0(agg_c_table, ".csv"),
+                                         destination.folder = file.path("src","bridges"))
+      
+      if(!is.null(downloader$error)){ # If the file cannot be downloaded
+        ermeeth::message_warning("Aggregation rule cannot be downloaded, using default rule instead.")
+        agg_c_table = read_excel(path = system.file("aggregation_rules.xlsx",package = "ermeeth"), sheet = "commodities")
+      }else if(downloader$result){
+        agg_c_table <- read_csv2(file.path("src","bridges", paste0(agg_c_table, ".csv"))) %>% 
+          filter(sec_com == "commodities") %>% select(-sec_com)
+      }else{ # If the file does not exist on the remote
+        ermeeth::message_warning("Aggregation rule does not exist, using default rule instead.")
+        agg_c_table = read_excel(path = system.file("aggregation_rules.xlsx",package = "ermeeth"), sheet = "commodities")
+      }
+    }
+  }
+
   if((by_com+by_sec) >0){
     ## Step 1 determine variables that need to be re-aggregated
     

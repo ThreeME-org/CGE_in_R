@@ -1,0 +1,107 @@
+## SU-IO model: endogenous variables' equations
+
+
+
+
+
+### Supply-Use and Input-Output block
+
+
+
+**Production of commodity $c$** 
+\repeatable{04.1-eq.mdlY[c]}
+
+
+**Production of commodity $c$ by sector $s$** 
+\repeatable{04.1-eq.mdlY[c,s]}
+
+
+**Total production of sector $s$** 
+\repeatable{04.1-eq.mdlY[s]}
+
+
+**Intermediate consumption $c$ consumed by sector $s$** 
+\repeatable{04.1-eq.mdlCI[c,s]}
+
+
+
+
+### Final use
+
+
+
+**Households consumption in commodity $c$** 
+\repeatable{04.1-eq.mdlCH[c]}
+
+
+**Investment in commodity $c$** 
+\repeatable{04.1-eq.mdlI[c]}
+
+
+**Public expenditures in commodity $c$** 
+\repeatable{04.1-eq.mdlG[c]}
+
+
+
+
+### Agregates
+
+
+
+**Intermediate consumption of commodity $c$ (agregation over $s$)** 
+\repeatable{04.1-eq.mdlCI[c]}
+
+
+**Intermediate consumption comsummed by sector $s$ (agregation over $c$)** 
+\repeatable{04.1-eq.mdlCI[s]}
+
+
+**Total intermediate consumption (agregation over commodities)** 
+$$CI = \sum_{c} CI_{c}$${#eq-04_1_eq_mdlCI}
+
+
+**Total intermediate consumption (agregation over sector)** 
+$$CI^{,bis} = \sum_{s} CI_{s}$${#eq-04_1_eq_mdlCI_bis}
+
+
+**Total production (agregation over commodities)** 
+$$Y = \sum_{c} Y_{c}$${#eq-04_1_eq_mdlY}
+
+
+**Total production (agregation over sectors)** 
+$$Y^{,bis} = \sum_{s} Y_{s}$${#eq-04_1_eq_mdlY_bis}
+
+
+**Total production (agregation over agregated uses)** 
+$$Y^{,ter} = CI + CH + I + G$${#eq-04_1_eq_mdlY_ter}
+
+
+
+
+### Gross Domestic Product (GDP)
+
+
+**Value added of sector $s$** 
+\repeatable{04.1-eq.mdlVA[s]}
+
+
+**Value added or GDP (production or supply definition)** 
+$$VA = \sum_{s} VA_{s}$${#eq-04_1_eq_mdlVA}
+$$VA = CH + I + G$${#eq-04_1_eq_mdlVA}
+
+
+**Value added or GDP (expenditure or use definition)** 
+$$VA = \sum_{s} VA_{s}$${#eq-04_1_eq_mdlVA}
+$$VA = CH + I + G$${#eq-04_1_eq_mdlVA}
+
+\newpage
+\repeatablebody{04.1-eq.mdlY[c]}{Y_{c} = CI_{c} + CH_{c} + I_{c} + G_{c}$${#eq-\repeatablebody{04_1_eq_mdlY_c_}{Y_{c} = CI_{c} + CH_{c} + I_{c} + G_{c}}}
+\repeatablebody{04.1-eq.mdlY[c,s]}{Y_{c, s} = \varphi^{Y}_{c, s} \; Y_{c}$${#eq-\repeatablebody{04_1_eq_mdlY_c_s_}{Y_{c_ s} = \varphi^{Y}_{c_ s} \; Y_{c}}}
+\repeatablebody{04.1-eq.mdlY[s]}{Y_{s} = \sum_{c} Y_{c, s}$${#eq-\repeatablebody{04_1_eq_mdlY_s_}{Y_{s} = \sum_{c} Y_{c_ s}}}
+\repeatablebody{04.1-eq.mdlCI[c,s]}{CI_{c, s} = \varphi^{CI}_{c, s} \; Y_{s}$${#eq-\repeatablebody{04_1_eq_mdlCI_c_s_}{CI_{c_ s} = \varphi^{CI}_{c_ s} \; Y_{s}}}
+\repeatablebody{04.1-eq.mdlCH[c]}{CH_{c} = \varphi^{CH}_{c} \; CH$${#eq-\repeatablebody{04_1_eq_mdlCH_c_}{CH_{c} = \varphi^{CH}_{c} \; CH}}
+\repeatablebody{04.1-eq.mdlI[c]}{I_{c} = \varphi^{I}_{c} \; I$${#eq-\repeatablebody{04_1_eq_mdlI_c_}{I_{c} = \varphi^{I}_{c} \; I}}
+\repeatablebody{04.1-eq.mdlG[c]}{G_{c} = \varphi^{G}_{c} \; G$${#eq-\repeatablebody{04_1_eq_mdlG_c_}{G_{c} = \varphi^{G}_{c} \; G}}
+\repeatablebody{04.1-eq.mdlCI[c]}{CI_{c} = \sum_{s} CI_{c, s}$${#eq-\repeatablebody{04_1_eq_mdlCI_c_}{CI_{c} = \sum_{s} CI_{c_ s}}}
+\repeatablebody{04.1-eq.mdlCI[s]}{CI_{s} = \sum_{c} CI_{c, s}$${#eq-\repeatablebody{04_1_eq_mdlCI_s_}{CI_{s} = \sum_{c} CI_{c_ s}}}
+\repeatablebody{04.1-eq.mdlVA[s]}{VA_{s} = Y_{s} - CI_{s}$${#eq-\repeatablebody{04_1_eq_mdlVA_s_}{VA_{s} = Y_{s} _ CI_{s}}}

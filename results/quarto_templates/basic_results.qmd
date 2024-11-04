@@ -1,24 +1,27 @@
 ---
-title: "Basic Results"
-author: "ThreeME Team"
+title: "Basic Macroeconomic Results"
 format: 
- html:
-  center: true
-  navigation-mode: linear
-  width: 1200
-  height: 700
+  html:
+    center: true
+    
+
 params:
-  project_name: "frelance"
+  project_name: "threeme"
   startyear: 2020
-  endyear: 2050
-  template_default: ofce
-  country_name: "France"
-  scenario: !expr c("baseline","frelance")  # List of scenarii to be plotted
+  endyear: 2100
+  shockyear: 2021
+  scenarios: NULL  # List of scenarii to be plotted
+  gdp_var: NULL
+  
+echo: false
 ---
 
+
 ```{r}
-#| label: setup
+#| echo: false
 #| include: false
+#| label: setup
+
 
 
 knitr::opts_chunk$set(
@@ -28,155 +31,362 @@ knitr::opts_chunk$set(
   results = "hide"
 )
 
-```
-
-```{r Plots default options}
-#| label: load_parameters and basic files
 
 source("src/setup.R")
 options(ofce.base_family = "Arial")
 
 
-startyear <- params$startyear
-endyear <- params$endyear
-template_default <- params$template_default
 project_name <- params$project_name
-
-scenarios <- c("baseline",params$scenario) |> unique()
 
 
 data_full <- readRDS(file.path("data","output",paste0(project_name,".rds")))
 
+
+distinct_pal <- c("#CD5C5C", "#E9967A", "#FFEC9E", "#9BCD9B", "#87CEFA", "#CD96CD", "#FFB6C1", "#8B7355")
+gradient_pal <- c( "#5D478B","#27408B", "#1C86EE", "#20B2AA", "#2E8B57", "#00688B" , "#6E7B8B") 
+
+var_pal =c(GDP = "#2B2D2DFF",Y = "#2B2D2DFF",CH="#E9967A",M="#CD5C5C",I = "#FFEC8B",G="#9BCD9B",X="#87CEFA")
+
 ```
 
-# Transforming data before making tables or graphs
-
-Below is the code for transforming data in relative difference, growth rate and index.
-
-Practice and add line in the `mutate` function !
 
 ```{r}
-#| label: transf-data
-#| echo: true
+#| label: various checks
 
-variables_selection = c("GDP","I","CH", "EMS")
-selection <- filter(data_full, variable %in% variables_selection, scenario %in% scenarios) |> 
-  group_by(scenario, variable) |> dplyr::arrange(year) |> 
+available_vars <- data_full$variable |> unique()
 
-  mutate(rel_dif     = values/values_ref - 1 , # Relative difference between every shock scenario and the baseline scenario 
-         growth_rate = values/lag(values) -  1 , # Growth rate for every scenario (baseline and shock)
-         index_startyear = values/values[which(year == startyear)] # Index = 1 at startyear for every scenario (baseline and shock) 
+if(is.null(params$gdp_var)){
+  GDP_var <- intersect(c("GDP","Y"),available_vars)[1]
+}else{
+  GDP_var <- intersect(c(params$gdp_var,"GDP","Y"),available_vars)[1]
+}
+
+
+
+
+if(is.null(params$scenarios)){
   
-         ) |> 
-  filter(year >= startyear & year <= endyear) |> 
-  # filter(index_scen == 0) |>
-  ungroup()
-
-```
-
-# Table results
-
-## A basic table example:
-
-In the "#\| tbl-cap:" option, you can define dynamics titles. You need to use `!expr`. Below `endyear` is replaced by `r endyear` (value defined in a previous chunck) .
-
-```{r}
-#| label: tbl-data_endyear
-#| tbl-cap: !expr 'paste("A selection of variables for the year", endyear)'
-#| results: asis
-#| echo: fenced
-
-selection_for_table <-  selection |> filter(variable %in% c("EMS", "GDP"), year %in% c(endyear)) |> select(variable, scenario, values, index_startyear) |> arrange(variable) |> 
-                      mutate_if(is.numeric, round, digits=2)
-
-table_endyear <- flextable(selection_for_table)
-
-table_endyear
-```
-
-## Same example but for year `r startyear`
-
-```{r}
-#| label: tbl-data_startyear
-#| tbl-cap: !expr 'paste("A selection of variables for the year", startyear)'
-#| results: asis
-#| echo: true
-
-selection_for_table <-  selection |> filter(variable %in% c("EMS", "GDP"), year %in% c(startyear)) |> select(variable, scenario, values, index_startyear) |> arrange(variable) |> 
-                        mutate_if(is.numeric, round, digits=1)
-
-table_startyear <- flextable(selection_for_table)
-
-table_startyear 
-```
-
-# Graph results
-
-## In relative difference for several scenarii (excluding baseline)
-
-Scenarii are compared to the reference scenario, indexed by 1. The baseline scenario is excluded using `filter(index_scen == 0)`.
-
-```{r}
-#| label: fig-multi-rel_dif
-#| fig-cap: GDP, Investment and consumption (relative to baseline)
-#| echo: true
-
-graph_rel_dif <- ggplot(selection |> filter(index_scen == 0), aes(y =rel_dif, x = year)) +
-                  geom_line(aes(linetype = scenario, colour = variable))
-
-graph_rel_dif
-```
-
-## In growth rate for several scenarii (including baseline)
-
-Here the reference scenario is not filtered. A theme has been add to improve the graph compared to @fig-multi-rel_dif.
-
-```{r}
-#| label: fig-multi-gr
-#| fig-cap: GDP, Investment and consumption (in growth rate)
-#| echo: true
-
-graph_gr <- ggplot(selection, aes(y = growth_rate, x = year)) +
-                geom_line(aes(linetype = scenario, colour = variable)) +
+  scenarios <- data_full$scenario |> unique()
+  }else{
+    
+  av_scenarios <- setdiff(data_full$scenario |> unique(),"baseline") 
+  check <- intersect(params$scenarios, av_scenarios)
   
-  theme_ofce()  +
-  theme(legend.title = element_blank(),
-        axis.title.x = element_blank(),
-        axis.title.y = element_blank())
 
-graph_gr
+  if(length(check) == 0){  scenarios <- data_full$scenario |> unique()
+  }else{
+    
+      scenarios <- c("baseline",intersect(c(params$scenarios ) |> unique(),av_scenarios ))
+  }
+  
+  }
+
+scenarios<- scenarios |> purrr::set_names()
+scen <- setdiff(scenarios,"baseline")   |> purrr::set_names()
+
+scen_pal <- purrr::set_names(c("thistle",gradient_pal[1:length(scen)]) , c("baseline", scen))
+
+startyear <- max(params$startyear, min(data_full$year, na.rm = TRUE))
+endyear <- min(params$endyear, max(data_full$year, na.rm = TRUE))
+shockyear <- max(params$shockyear, min(data_full$year, na.rm = TRUE))
+
+n_years <- endyear - startyear +1
+    algo_x_breaks <- 10
+    if (n_years <= 35) {
+      algo_x_breaks <- 5
+    }
+    if (n_years <= 20) {
+      algo_x_breaks <- 2
+    }
+    if (n_years <= 10) {
+      algo_x_breaks <- 1
+    }
+    break_x_sequence <- seq(from = startyear, to = endyear, 
+                            by = algo_x_breaks)
+```
+
+`r if(length(GDP_var) == 0 ){"Couldn't find any GDP variable"}`
+`r if(length(GDP_var) == 0 ){knit_exit()}`
+
+
+
+
+```{r}
+#| label: some_info
+
+labels <- purrr::set_names(
+ x= c(GDP_var,"I","CH","G"),
+  nm=c("GDP", "Total investment","Households consumption", "Public spending")
+  
+)
+  
+
+
 ```
 
 
-## In growth rate for several scenarii (including baseline)
-
-Here the reference scenario is not filtered. A theme has been add to improve the graph compared to @fig-multi-rel_dif.
+# GDP evolution
 
 ```{r}
-#| label: fig-multi-index
-#| fig-cap: !expr 'paste("GDP, Investment and consumption (", startyear,"= 1)")'
-#| echo: true
+#| label: fig-gdprel
+#| fig-cap: "GDP relative to the baseline scenario"
 
-graph_index <- ggplot(selection |> filter(variable %in% c("EMS", "GDP")), aes(y = index_startyear, x = year)) +
-                      geom_line(aes(linetype = scenario, colour = variable))
+graph_gdp_rel <- data_full |> filter(variable == GDP_var) |> 
+  mutate(reldiff =  (values/values_ref) - 1)|> 
+  ggplot(aes(x = year, y = reldiff ))+
+  geom_line(aes(colour = scenario))+
+  scale_x_continuous(breaks = break_x_sequence)  + 
+  scale_color_manual(values = scen_pal) + 
+    labs(x = NULL,  y = NULL) + 
+    
+    ofce::theme_ofce(base_family = "")+ 
+    theme(
+          axis.title.y = element_blank(), 
+          axis.ticks = element_line(linewidth  = 0.5,   colour = "grey42"), 
+          legend.position = "bottom",
+          legend.title = element_blank())+ 
+  scale_y_continuous(labels = scales::percent_format(accuracy = 0.25, 
+                                                       suffix = "%"))
+  
+  
 
-graph_index
+graph_gdp_rel
+
 ```
 
 
+```{r}
+#| label: fig-gdplevel
+#| fig-cap: "GDP level per scenario"
+
+graph_gdp_level <- data_full |> filter(variable == GDP_var) |> 
+  ggplot(aes(x = year, y = values) )+
+  geom_line(aes(colour = scenario))+
+  scale_x_continuous(breaks = break_x_sequence) + 
+  
+    scale_color_manual(values = scen_pal) + 
+    labs(x = NULL,  y = NULL) + 
+    
+    ofce::theme_ofce(base_family = "")+ 
+    theme(
+          axis.title.y = element_blank(), 
+          axis.ticks = element_line(linewidth  = 0.5,   colour = "grey42"), 
+          legend.position = "bottom",
+          legend.title = element_blank())
+  
+  
+
+
+graph_gdp_level  
+  
+```
+
+# GDP components
+
+
+## Domestic components
 
 
 ```{r}
-#| label: save_bank
+#| label: fig-domestic
+#| fig-cap: GDP domestic components in relative difference from the baseline
+
+
+vars_dom <- intersect(c("I","CH","G"), available_vars)
+
+ if( length(vars_dom) == 0 ){
+   graph_domestic <- NULL
+
+ }else{
+   graph_domestic <-  imap(scen,
+                           ~simple_plot(data_full |> filter(scenario == .x), 
+                                        c(GDP_var,vars_dom) ,
+                                        startyear = startyear, endyear = endyear , titleplot = .y, decimal = 0.01)+ 
+                             scale_linetype(guide = 'none')+
+                             scale_color_manual(values = var_pal, breaks = c(GDP_var,vars_dom))+
+                             theme(legend.title = element_blank(),
+                                   legend.position = "bottom")
+   )
+
+   if(length(graph_domestic)==1){
+     graph_domestic[[1]]
+   }else{
+       ggarrange(plotlist = graph_domestic,ncol = 1,common.legend = TRUE)}
+ }
+
+```
+
+## Foreign trade
+
+```{r}
+#| label: fig-comext
+
+vars_comext <- intersect(c("X","M") , available_vars)
+
+ if( length(vars_comext) == 0 ){
+   graph_comext <- NULL
+   
+
+ }else{
+   graph_comext <- TRUE
+   
+      graph_comext <-  imap(scen,~simple_plot(data_full |> filter(scenario == .x), c(vars_comext) ,startyear = startyear, endyear = endyear , titleplot = .y, decimal = 0.01)+ scale_linetype(guide = 'none')+
+     scale_color_manual(values = var_pal)+
+     theme(legend.title = element_blank(),
+           legend.position = "bottom")
+   )
+
+   ggarrange(plotlist = graph_comext,ncol = 1,common.legend = TRUE)
+   
+ }
+
+```
+
+`r if(is.null(graph_comext)){ "\nThis graph cannot be made for this model, as both foreign trade components X and M are not in this model.\n"}`
+
+# Summary 
+
+## Contributions to relative change in GDP from the baseline
+
+```{r}
+#| label: calcs_contrib
 #| include: false
 
-save(list = ls(pattern = "^graph_.+$|^table_.+$"),
-     
-     file = str_c("results/output_banks/basic_bank_",project_name,".rda") 
+contrib_comp <- c(vars_dom,vars_comext)
+contrib_comp_label <- contrib_comp
+
+
+data_contrib <-  map(scen,~contrib_calc(data_full,GDP_var, contrib_comp, scenar = c("baseline",.x), neg.value = intersect(vars_comext,"M"))) |> set_names(scen)
+
+graph_contrib_gdp <- data_contrib |> imap(
+~contrib.plot(.x, series = contrib_comp,label_series = contrib_comp_label,
+             startyear = startyear, titleplot = NULL, line_tot = TRUE,
+             template = "ofce",
+             decimal = 0.01
+             ) + 
+  scale_fill_manual(values = desaturate(var_pal,0.1))+
+     theme(legend.title = element_blank(),
+           legend.position = "bottom")
+
 )
+graph_contrib_gdp
+
+```
+
+::: panel-tabset
+
+```{r }
+#| echo: false
+#| label: contribs
+#| results: asis
+#| output: asis
 
 
+
+for (i in scen) {
+  
+ cat(paste0("### ",i," {.tabset}\n"))
+  
+ print(graph_contrib_gdp[[i]] + 
+         theme(legend.position = "bottom" ) 
+       )
+ 
+ cat("\n\n")
+ 
+}
+
+```
+
+:::
+
+
+
+
+
+
+## Summary tables : observed growth rates
+
+
+```{r}
+#| include: false
+
+
+tables_refs <- purrr::set_names(scenarios) |>
+  
+  map(~table_reference(data_full,ref_name = .x , 
+                       growth_var = c(GDP_var,vars_dom,vars_comext),shock_year = shockyear ) 
+      )
+
+table_format_gt <- function(gt){
+  gt |> 
+  cols_label(Variable = "") |> 
+  cols_align("center")|>
+  cols_align("right", columns = 1)|>
+  opt_horizontal_padding(scale = 1.75)
+ 
+}
+
+```
+
+
+::: panel-tabset
+
+```{r}
+#| include: true
+#| results: asis
+#| output: asis
+
+
+for (i in scenarios) {
+  
+ cat(paste0("### Scenario ",i," {.tabset} \n"))
+  
+print(tables_refs[[i]] |> gt() |> table_format_gt())
+ cat("\n\n")
+ 
+}
+
+
+```
+
+:::
+
+
+## Summary tables: in difference from the baseline
+
+```{r}
+#| include: false
+
+
+tables_macros <- purrr::set_names(scen) |>
+  
+  map(~table_macro(data_full,shock = .x , 
+                       relative_variation = c(GDP_var,vars_dom,vars_comext),shock_year = shockyear ) 
+      )
 
 
 
 ```
+
+::: panel-tabset
+
+```{r}
+#| include: true
+#| results: asis
+#| output: asis
+
+
+for (i in scen) {
+  
+ cat(paste0("### Scenario ",i," {.tabset} \n"))
+  
+print(tables_macros[[i]] |> gt() |> table_format_gt())
+ cat("\n\n")
+ 
+}
+
+
+```
+
+:::
+

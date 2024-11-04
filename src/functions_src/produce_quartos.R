@@ -4,7 +4,7 @@ produce_quartos<- function(Show = TRUE,
                 templates_path = file.path("results","quarto_templates"),
                 output_path = file.path("results","quarto_render"),
                 project_name = config$input$project_name ){
-  
+
   templates_selection = config$output$quartos_to_render
   parameters = config$output$quartos_parameters
   templates_path = file.path("results","quarto_templates")

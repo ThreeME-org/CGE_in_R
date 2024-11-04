@@ -23,25 +23,18 @@ source(file.path("src","setup.R"))
 
 data_full <- run_simulations(configuration = config)
 
-data_full |> filter(variables %in% c("Y")) |> ggplot(aes(y = (values/values_ref)-1,x = year)) +
-  geom_line(aes(linetype = scenario))
+# data_full |> filter(variable %in% c("Y")) |> ggplot(aes(y = (values/values_ref)-1,x = year)) +
+  # geom_line(aes(linetype = scenario))
 
 ## 3. Les sorties 
 
 ### 3.A Compiler la documentation du model depuis les equations (version LaTeX et quarto)
 
 
-teXdoc(sources   = c("01.2-eq.mdl"),
-       exo       = NULL,
-       base.path = file.path("src","model","training"),
-       out       = "model-eq",
-       out.path  = file.path("results","quarto_templates","results_side_files"))
-make_eq_qmd(preface = c("model-eq_preface.tex"),
-            maintex = c("model-eq.tex"))
-
 ### 3.B Sorties via quarto templates
 
-produce_quartos(Show = TRUE)
+produce_quartos(Show = TRUE,output_path = ".")
+
 cleanup_output() #Pour nettoyer les fichiers html anciens
 
 ### 3.C Faire votre propre quarto 
