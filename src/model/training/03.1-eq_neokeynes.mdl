@@ -21,7 +21,7 @@ K = K{-1} * (1 - delta) + I{-1}
 
 ##! Notional production price
 p_n * Y = c_Y * Y * (1 + m_up)
-# p_n * Y = c_Y * Y * (1 + m_up )   # Activate this equation, if we want to simulate a shock on the mark-up via dm_up
+# p_n * Y = c_Y * Y * (1 + m_up + dm_up)   # Activate this equation, if we want to simulate a shock on the mark-up via dm_up
 
 ##! Notional mark-up
 d(log(1 + m_up_n)) = rho_mupn_Ln * d(log(L_n/L)) + rho_mupn_Kn * d(log(K_n/K))

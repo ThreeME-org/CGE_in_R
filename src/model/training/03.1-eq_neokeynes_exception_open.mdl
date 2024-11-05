@@ -8,7 +8,7 @@
 
 ##! Notional production price in open economy
 py_n * Y = c_Y * Y * (1 + m_up)
-# py_n * Y = c_Y * Y * (1 + m_up )   # Activate this equation, if we want to simulate a shock on the mark-up via dm_up
+# py_n * Y = c_Y * Y * (1 + m_up + dm_up)   # Activate this equation, if we want to simulate a shock on the mark-up via dm_up
 
 ##! Profit of firms (before investment) in open economy
 @over PROF = py * Y - w * L - c_K * K
