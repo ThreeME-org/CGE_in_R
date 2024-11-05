@@ -1,0 +1,58 @@
+## Parameter of the models
+
+##! Capital depreciation ratio
+delta := 0.05
+
+##! Elasticity of substitution between capital and labor (CES function)
+rho := 0.1
+
+##! Adjustment parameter of investment to notional capital
+alpha_I_Kn := 0.1
+
+## Variables calibrated on real data
+
+##! Interest rate
+r := 0.1
+
+##! Price 
+p := 1
+
+# Labor
+L :=  1000
+
+# Production
+Y := 100
+
+# Investment
+I :=  20
+
+# Public spending
+G :=  15
+
+## Calibration derived from equations
+# Consumption
+CH := Y - I - G
+
+# Wage
+w*L := p*Y - p*(delta + r)*K
+
+# Long-term savings rate
+(1 - sigma) := p * CH / (w*L + p*r*K)
+
+# Capital Stock
+K := I / delta
+
+K_n := K
+
+##! Labor technical progress (CES function)
+PROG_L := Y / L 
+
+##! Capital technical progress (CES function)
+PROG_K := Y / K
+
+# Labour share in production function
+Phi_L := w * L / (p * Y)
+
+# Capital share in production function
+Phi_K := p * (r + delta) * K / (p * Y)
+

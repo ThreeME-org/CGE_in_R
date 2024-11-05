@@ -1,0 +1,75 @@
+## Long term equilibrium
+# Growth rate of labor productivity
+GR_PROD_L := 0.01
+
+# Growth rate of population
+GR_POP := 0.005
+
+# Growth rate of prices (Inflation)
+GR_PRICE := 0.02
+
+# Long-term growth
+mu := (1 + GR_PROD_L)*(1 + GR_POP) - 1
+GR_nml := (1+mu) * (1 + GR_PRICE) - 1
+GR_w_nml := (1 + GR_PROD_L) * (1 + GR_PRICE) - 1
+
+
+## Parameter of the models
+
+##! Capital depreciation ratio
+delta := 0.05
+
+##! Elasticity of substitution between capital and labor (CES function)
+rho := 0.1
+
+##! Adjustment parameter of investment to notional capital
+alpha_I_Kn := 0.1
+
+## Variables calibrated on real data
+
+##! Interest rate
+r := 0.1
+
+##! Price 
+p := 1 * (1 + GR_PRICE)^(@year - %baseyear)
+
+# Labor
+L :=  1000 * (1 + GR_POP)^(@year - %baseyear)
+
+# Production
+Y := 100 * (1 + mu)^(@year - %baseyear)
+
+# Investment
+I :=  20 * (1 + mu)^(@year - %baseyear)
+
+# Public spending
+G :=  15  * (1 + mu)^(@year - %baseyear)
+
+## Calibration derived from equations
+# Consumption
+CH := Y - I - G
+
+# Wage
+w*L := p*Y - p*(delta + r)*K
+
+# Long-term savings rate
+(1 - sigma) := p * CH / (w*L + p*r*K)
+
+# Capital Stock
+K := I / (delta + mu)
+
+K_n := K
+
+##! Labor technical progress (CES function)
+PROG_L := Y / L 
+
+##! Capital technical progress (CES function)
+PROG_K := Y / K
+
+# Labour share in production function
+Phi_L := w * L / (p * Y)
+
+# Capital share in production function
+Phi_K := p * (r + delta) * K / (p * Y)
+
+

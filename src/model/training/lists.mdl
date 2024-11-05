@@ -1,0 +1,12 @@
+# List and sets
+
+%baseyear := 2019
+
+# Sectors and commodities
+%list_sec := s001 s002
+%list_com := c001 c002
+
+# Default iterators
+s in %list_sec
+c in %list_com
+

@@ -1,0 +1,100 @@
+---
+title: "Model and Simulation Information"
+format: html
+echo: false
+params:
+  baseyear: 2019
+  lastyear: 2050
+  classification: "s0_c0"
+  scenario_baseline: "steady"
+  shocks: "g"
+  calib_files: "01-1.eq_data.mdl"
+  model_files: "01-1.eq.mdl"
+  rsolver: TRUE
+  project_name: "session4"
+---
+
+```{r}
+#| include: false
+#| label: setup
+
+
+
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  results = "hide"
+)
+
+
+source("src/setup.R")
+options(ofce.base_family = "Arial")
+
+
+project_name <- params$project_name
+
+
+data_full <- readRDS(file.path("data","output",paste0(project_name,".rds")))
+
+
+distinct_pal <- c("#CD5C5C", "#E9967A", "#FFEC9E", "#9BCD9B", "#87CEFA", "#CD96CD", "#FFB6C1", "#8B7355")
+gradient_pal <- c( "#5D478B","#27408B", "#1C86EE", "#20B2AA", "#2E8B57", "#00688B" , "#6E7B8B") 
+
+var_pal =c(GDP = "#2B2D2DFF",Y = "#2B2D2DFF",CH="#E9967A",M="#CD5C5C",I = "#FFEC8B",G="#9BCD9B",X="#87CEFA")
+
+```
+
+
+```{r}
+#| label: table info build
+
+
+sectors <- (data_full |> filter(!is.na(sector)))$sector |> unique()
+commodities <- (data_full |> filter(!is.na(commodity)))$commodity |> unique()
+
+
+
+info_mod <- rbind(
+  c("Base year of the data", params$baseyear),
+  c("Last year of simulations", params$lastyear ),
+  c("Sectoral classification", ifelse( params$classification=="s0_c0", NA, params$classification)),
+  c("Sectors identified" , str_c(sectors,collapse   = " \n ")),
+  c("Commodities identified" , str_c(commodities,collapse   = " \n ") ),
+  c("Baseline scenario" , params$scenario_baseline ),
+  c("Shock scenarios" , params$shocks ),
+  c("Model calibration files" , str_c(setdiff(params$calib_files,c("lists.mdl","ENDOFLINE.mdl")),collapse   = " \n ") ),
+  c("Model equation files" , str_c(setdiff(params$model_files,c("lists.mdl","ENDOFLINE.mdl")),collapse   = " \n ") ),
+  c("Solver used" , ifelse(params$rsolver ,"R Solver - tresthor","EViews") )
+) |> as.data.frame() |> rename(what = 1, this = 2)
+```
+
+# Simulation experiment information
+
+```{r}
+#| results: asis
+#| output: asis
+info_mod |> gt() |> gt::cols_label( what = " ",this = md("*as configured*"))
+```
+
+# Model Equations
+
+```{r}
+if(file.exists("results/quarto_render/equations.qmd")){
+eqfiles_date <- file.info("results/quarto_render/equations.qmd")$ctime  
+eqfile_check <- TRUE 
+}else{
+  eqfile_check <- FALSE
+}
+
+
+```
+
+`r str_c('equation files generated on' , eqfiles_date)`
+
+
+{{< include results/quarto_render/equations.qmd >}}
+ 
+{{< include results/quarto_render/exogenous.qmd >}}
+ 
+

@@ -1,0 +1,13 @@
+##### Basic model
+
+##! Production (GDP)
+Y = CH + I + G
+
+##! Households consumption
+CH = 0.6 * Y{-1}
+
+##! Investment
+I = 0.2 * Y{-1}
+
+
+

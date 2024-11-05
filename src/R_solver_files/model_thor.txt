@@ -1,0 +1,11 @@
+endogenous variables : 
+y
+ ##############
+exogenous variables : 
+ch,g,i
+ ##############
+coefficients : 
+
+ ##############
+equations : 
+y=ch+i+g

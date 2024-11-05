@@ -1,0 +1,10 @@
+This folder is for R source files.
+Individual functions a are to be stored in functions_src folder.
+
+The functions.R script will read them all.
+
+In the functions src folder : .R 
+Riles that start with 0 are functions that do not require other home-made functions.
+Files that start with 1 are functions that require 0 functions
+Files that start with 2 are functions that require 1 functions 
+etc...

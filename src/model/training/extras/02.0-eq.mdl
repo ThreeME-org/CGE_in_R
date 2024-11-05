@@ -1,0 +1,21 @@
+##### Endogenous variables' equations
+
+##! Production (GDP)
+Y = CH + I + G
+## This equation is an identity or accountancy relation. \\
+
+##! Price 
+p*Y = w*L + p*(delta + r)*K
+
+##! Households'consumption
+CH = (1 - sigma) * (w*L + p*r*K) / p
+
+##! Labor demand
+L = (Y / PROG_L) * ((Phi_L) ^ rho) * (w/(p * PROG_L)) ^ (-rho)
+## This equation is derived from a cost minimization assuming a CES production function technology. \\
+
+##! Capital demand (from CES function)
+K_CES = (Y / PROG_K) * ((Phi_K) ^ rho) * ((delta + r)/PROG_K) ^ (-rho)
+
+##! Capital (from accumulation equation)
+d(K) = I{-1} - delta * K{-1}

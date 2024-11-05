@@ -1,0 +1,29 @@
+##### Endogenous variables' equations
+
+##! Investement
+I = Y - CH - G
+
+##! Production (GDP)
+Y * p = w*L + p*(delta + r)*K
+# Y = ((Phi_L * (L*PROG_L) ^ ((rho-1)/rho )) + (Phi_K * (K*PROG_K) ^ ((rho-1)/rho )))^(rho/(rho-1))
+# Mettre alternative possible: Fonction de production directement
+
+##! Households'consumption
+ CH = (1 - sigma) * (w*L + p*r*K) / p
+# d(log(CH)) = d(log(Y{-1}))
+
+##! Wage (from cost minimization assuming a CES function)
+w + L = ((Y / PROG_L) * ((Phi_L) ^ rho) * (w/(p * PROG_L)) ^ (-rho)) + w
+# w / (p * PROG_L) = Phi_L * (Y / (L * PROG_L)) ^ (1 / rho)
+ 
+
+##! Interest rate (from cost minimization assuming a CES function)
+r + K = ((Y / PROG_K) * ((Phi_K) ^ rho) * ((delta + r)/PROG_K) ^ (-rho)) + r
+# (r + delta)/PROG_K  = Phi_K * (Y / (K * PROG_K)) ^ (1/rho)
+
+##! Capital (from accumulation equation)
+d(K) = I{-1} - delta * K{-1}
+
+##! Price 
+p = 1
+
