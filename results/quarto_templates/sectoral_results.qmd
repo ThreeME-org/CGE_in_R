@@ -1,25 +1,107 @@
 ---
 title: "Sectoral basic results"
-format: html
+format: 
+  html:
+    center: true
+    
+
+params:
+  project_name: "threeme"
+  startyear: 2020
+  endyear: 2100
+  shockyear: 2021
+  scenarios: NULL  # List of scenarii to be plotted
+  gdp_var: NULL
+  
+echo: false
 ---
 
-## Quarto
-
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
-
-```{r}
-1 + 1
-```
-
-You can add options to executable code like this
+### [coming soon!]
 
 ```{r}
 #| echo: false
-2 * 2
+#| include: false
+#| label: setup
+
+
+
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  results = "hide"
+)
+
+
+source("src/setup.R")
+options(ofce.base_family = "Arial")
+
+
+project_name <- params$project_name
+
+
+data_full <- readRDS(file.path("data","output",paste0(project_name,".rds")))
+
+
+distinct_pal <- c("#CD5C5C", "#E9967A", "#FFEC9E", "#9BCD9B", "#87CEFA", "#CD96CD", "#FFB6C1", "#8B7355")
+gradient_pal <- c( "#5D478B","#27408B", "#1C86EE", "#20B2AA", "#2E8B57", "#00688B" , "#6E7B8B") 
+
+var_pal =c(GDP = "#2B2D2DFF",Y = "#2B2D2DFF",CH="#E9967A",M="#CD5C5C",I = "#FFEC8B",G="#9BCD9B",X="#87CEFA")
+
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+
+```{r}
+#| label: various checks
+
+available_vars <- data_full$variable |> unique()
+
+if(is.null(params$gdp_var)){
+  GDP_var <- intersect(c("GDP","Y"),available_vars)[1]
+}else{
+  GDP_var <- intersect(c(params$gdp_var,"GDP","Y"),available_vars)[1]
+}
+
+
+
+
+if(is.null(params$scenarios)){
+  
+  scenarios <- data_full$scenario |> unique()
+  }else{
+    
+  av_scenarios <- setdiff(data_full$scenario |> unique(),"baseline") 
+  check <- intersect(params$scenarios, av_scenarios)
+  
+
+  if(length(check) == 0){  scenarios <- data_full$scenario |> unique()
+  }else{
+    
+      scenarios <- c("baseline",intersect(c(params$scenarios ) |> unique(),av_scenarios ))
+  }
+  
+  }
+
+scenarios<- scenarios |> purrr::set_names()
+scen <- setdiff(scenarios,"baseline")   |> purrr::set_names()
+
+scen_pal <- purrr::set_names(c("thistle",gradient_pal[1:length(scen)]) , c("baseline", scen))
+
+startyear <- max(params$startyear, min(data_full$year, na.rm = TRUE))
+endyear <- min(params$endyear, max(data_full$year, na.rm = TRUE))
+shockyear <- max(params$shockyear, min(data_full$year, na.rm = TRUE))
+
+n_years <- endyear - startyear +1
+    algo_x_breaks <- 10
+    if (n_years <= 35) {
+      algo_x_breaks <- 5
+    }
+    if (n_years <= 20) {
+      algo_x_breaks <- 2
+    }
+    if (n_years <= 10) {
+      algo_x_breaks <- 1
+    }
+    break_x_sequence <- seq(from = startyear, to = endyear, 
+                            by = algo_x_breaks)
+```

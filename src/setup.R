@@ -21,7 +21,7 @@ required_CRAN_packages <- c("data.table", "lemon", "tidyverse", "extrafont", "sc
                        "Deriv", "splitstackshape", "gsubfn", "cointReg","RcppArmadillo","Rcpp","zip",
                        "devtools","eurostat","RJSONIO","rdbnomics","rmarkdown","officer","shiny","ggh4x","openxlsx",
                        "stringr", "sys","ggpp","magick","qs","showtext","knitr","paletteer","countrycode","plotly",
-                       "crayon","beepr","learnr", "DiagrammeR", "quarto","gt",
+                       "crayon","beepr","learnr", "DiagrammeR", "quarto","gt","downloadthis","PrettyCols",
                        "fst", "microbenchmark", "tictoc","dtplyr")
 
 not_installed_CRAN <-  required_CRAN_packages[!(required_CRAN_packages     %in% installed.packages()[ , "Package"])]

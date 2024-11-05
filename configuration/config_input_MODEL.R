@@ -11,7 +11,7 @@
 iso3 = "FRA"                   
 classification = "c2_s2" 
 model_folder = "training"
-project_name = "session1"
+project_name = "test"
 
 
 scenario_baseline = "baseline-steady" # Maybe modified if the baseline needs to integrate some user-specified trajectories of exogenous variables.  All scenarii files are  located in configuration/scenarii_calib
@@ -48,8 +48,7 @@ lists_files = c(
 
 calib_files <- c(lists_files,
                  
-                "03.1-calib.mdl",     
-                "03.1-calib_exception_open.mdl",
+                "01.1-calib.mdl",     
                 
                  "ENDOFLINE.mdl"       # ALL VERSIONS: empty file
                  
@@ -57,8 +56,7 @@ calib_files <- c(lists_files,
 
 # Model files 
 model_files = c(lists_files,
-                "03.1-eq_neokeynes.mdl",     
-                "03.1-eq_neokeynes_exception_open.mdl",
+                "01.1-eq_one_eq.mdl",     
                 
                 
                 "ENDOFLINE.mdl"        # ALL VERSIONS: empty file

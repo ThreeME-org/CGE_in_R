@@ -1,9 +1,7 @@
-The slide of the presentation are accessible locally at:
+The latest versions of the workshop presentations are accessible at:
 
-...\ISIOA_2023_CGEinR-open\0_documentation
+https://threeme-org.github.io/CGE_inR_iberomex/Exercises_short.html
 
-The latest versions of these presentations are accessible at:
 
-https://ofce.github.io/ISIOA_2023_CGEinR/ 
 
 

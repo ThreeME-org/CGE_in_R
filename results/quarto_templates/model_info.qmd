@@ -12,10 +12,6 @@ params:
   model_files: "01-1.eq.mdl"
   rsolver: TRUE
   project_name: "session4"
-  texdoc: FALSE
-  texdoc_mdls: "default"
-  texdoc_exovar: NULL
-  mdl_folder: "training"
 ---
 
 ```{r}
@@ -81,44 +77,24 @@ info_mod <- rbind(
 info_mod |> gt() |> gt::cols_label( what = " ",this = md("*as configured*"))
 ```
 
+# Model Equations
+
 ```{r}
-#| results: asis
-#| label: texdoc
-#| eval: true
-
-if(params$texdoc_mdls == "default"){
-  mod_files <- setdiff(params$model_files,c("lists.mdl","ENDOFLINE.mdl"))
-  
+if(file.exists("results/quarto_render/equations.qmd")){
+eqfiles_date <- file.info("results/quarto_render/equations.qmd")$ctime  
+eqfile_check <- TRUE 
 }else{
-  mod_files <- params$texdoc_mdls
-  
+  eqfile_check <- FALSE
 }
 
-  if(is.null(params$texdoc_exovar)){
-  exo_files <- NULL
-  
-}else{
-  exo_files <- params$texdoc_exovar
-  
-}
 
-teXdoc(sources   = mod_files,
-       exo       = exo_files,
-       base.path = file.path("src","model",params$mdl_folder),
-       out       = str_c("eq-",project_name),
-       out.path  = file.path("results","quarto_render"))
-
-make_eq_qmd(preface = str_c("eq-",project_name,"_preface.tex"),
-            maintex = str_c("eq-",project_name,".tex"),
-            path = file.path("results","quarto_render"),
-            out.dir =  file.path("results","quarto_render") )
 ```
 
-# Model Equations
+`r str_c('equation files generated on' , eqfiles_date)`
+
 
 {{< include results/quarto_render/equations.qmd >}}
  
 {{< include results/quarto_render/exogenous.qmd >}}
  
-{{< include results/quarto_render/glossary.qmd >}}
 
